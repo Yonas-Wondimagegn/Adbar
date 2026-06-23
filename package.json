@@ -1,9 +1,5 @@
 {
   "name": "adbar",
   "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "echo 'Use vercel dev for frontend or docker compose for backend'",
-    "build": "echo 'Use vercel build for frontend or docker compose for backend'"
-  }
+  "private": true
 }
