@@ -1,0 +1,5 @@
+# Exclude everything from Vercel build context except frontend
+*
+!frontend/web/
+!frontend/web/**
+!vercel.json
