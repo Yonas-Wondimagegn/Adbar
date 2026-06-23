@@ -1,4 +1,5 @@
 {
-  "framework": "nextjs",
-  "installCommand": "npm install --legacy-peer-deps"
+  "buildCommand": "cd frontend/web && npm install --legacy-peer-deps && npm run build",
+  "outputDirectory": "frontend/web/.next",
+  "installCommand": "echo skip"
 }
