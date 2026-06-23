@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/review",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build review",
+    "start": "nest start review",
+    "start:dev": "nest start review --watch",
+    "start:debug": "nest start review --debug --watch",
+    "start:prod": "node dist/services/review/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/review/jest.config.ts"
+  }
+}

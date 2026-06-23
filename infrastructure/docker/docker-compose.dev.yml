@@ -1,0 +1,356 @@
+# ============================================================
+# Adbar Platform — Docker Compose (Development)
+# Full local dev stack with all services
+# ============================================================
+version: "3.9"
+
+x-common-env: &common-env
+  NODE_ENV: development
+  LOG_LEVEL: debug
+
+x-postgres-common: &postgres-common
+  POSTGRES_USER: adbar
+  POSTGRES_PASSWORD: adbar_dev_password
+  POSTGRES_DB: adbar
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: adbar-postgres
+    restart: unless-stopped
+    environment:
+      <<: *postgres-common
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adbar"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - adbar-net
+
+  # ── Redis ───────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: adbar-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass adbar_redis_pass
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "adbar_redis_pass", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - adbar-net
+
+  # ── Elasticsearch ───────────────────────────────────────
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: adbar-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - cluster.name=adbar-cluster
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    networks:
+      - adbar-net
+
+  # ── Zookeeper ───────────────────────────────────────────
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: adbar-zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_log:/var/lib/zookeeper/log
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181", "|", "grep", "imok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - adbar-net
+
+  # ── Kafka ───────────────────────────────────────────────
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: adbar-kafka
+    restart: unless-stopped
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: 3
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+    networks:
+      - adbar-net
+
+  # ── API Gateway ─────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ../services/api-gateway
+      dockerfile: ../../infrastructure/docker/Dockerfile.api-gateway
+      target: builder
+    container_name: adbar-api-gateway
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+      PORT: 3000
+      DATABASE_URL: postgresql://adbar:adbar_dev_password@postgres:5432/adbar
+      REDIS_URL: redis://:adbar_redis_pass@redis:6379
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      KAFKA_BROKERS: kafka:9092
+      JWT_SECRET: dev-jwt-secret-change-in-production
+      CORS_ORIGINS: "http://localhost:3001,http://localhost:3002"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../services/api-gateway/src:/app/src:ro
+    networks:
+      - adbar-net
+
+  # ── Auth Service ────────────────────────────────────────
+  auth-service:
+    build:
+      context: ../services/auth-service
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+      target: builder
+    container_name: adbar-auth-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+      PORT: 3001
+      DATABASE_URL: postgresql://adbar:adbar_dev_password@postgres:5432/adbar
+      REDIS_URL: redis://:adbar_redis_pass@redis:6379
+      JWT_SECRET: dev-jwt-secret-change-in-production
+      KAFKA_BROKERS: kafka:9092
+    ports:
+      - "3001:3001"
+    volumes:
+      - ../services/auth-service/src:/app/src:ro
+    networks:
+      - adbar-net
+
+  # ── Marketplace Service ─────────────────────────────────
+  marketplace-service:
+    build:
+      context: ../services/marketplace-service
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+      target: builder
+    container_name: adbar-marketplace-service
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+      PORT: 3002
+      DATABASE_URL: postgresql://adbar:adbar_dev_password@postgres:5432/adbar
+      REDIS_URL: redis://:adbar_redis_pass@redis:6379
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      KAFKA_BROKERS: kafka:9092
+    ports:
+      - "3002:3002"
+    volumes:
+      - ../services/marketplace-service/src:/app/src:ro
+    networks:
+      - adbar-net
+
+  # ── Notification Service ────────────────────────────────
+  notification-service:
+    build:
+      context: ../services/notification-service
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+      target: builder
+    container_name: adbar-notification-service
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      <<: *common-env
+      PORT: 3003
+      REDIS_URL: redis://:adbar_redis_pass@redis:6379
+      KAFKA_BROKERS: kafka:9092
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+    ports:
+      - "3003:3003"
+    volumes:
+      - ../services/notification-service/src:/app/src:ro
+    networks:
+      - adbar-net
+
+  # ── Web Frontend (Next.js) ──────────────────────────────
+  web:
+    build:
+      context: ../apps/web
+      dockerfile: ../../infrastructure/docker/Dockerfile.web
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:3000
+        NEXT_PUBLIC_APP_ENV: development
+    container_name: adbar-web
+    restart: unless-stopped
+    depends_on:
+      - api-gateway
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_ENV: development
+    ports:
+      - "3004:3000"
+    volumes:
+      - ../apps/web/src:/app/src:ro
+    networks:
+      - adbar-net
+
+  # ── MailHog (local email testing) ───────────────────────
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: adbar-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - adbar-net
+
+  # ── MinIO (local S3-compatible storage) ─────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: adbar-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: adbar_minio
+      MINIO_ROOT_PASSWORD: adbar_minio_password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - adbar-net
+
+  # ── Prometheus ──────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: adbar-prometheus
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - adbar-net
+
+  # ── Grafana ─────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: adbar-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_INSTALL_PLUGINS: grafana-clock-panel
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - "3005:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - adbar-net
+
+# ── Volumes ───────────────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  elasticsearch_data:
+    driver: local
+  zookeeper_data:
+    driver: local
+  zookeeper_log:
+    driver: local
+  kafka_data:
+    driver: local
+  minio_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# ── Networks ──────────────────────────────────────────────
+networks:
+  adbar-net:
+    driver: bridge
+    name: adbar-dev-network

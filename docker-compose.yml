@@ -1,0 +1,37 @@
+# ============================================================
+# Adbar Platform — Docker Compose (Root)
+# Delegates to infrastructure/docker/ for environment-specific configs
+# ============================================================
+# Usage:
+#   Development:  docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
+#   Production:   docker compose -f infrastructure/docker/docker-compose.prod.yml up -d
+#   Testing:      docker compose -f infrastructure/docker/docker-compose.test.yml up -d
+#
+# This root file provides a convenience wrapper for the dev stack.
+# ============================================================
+
+version: "3.9"
+
+# Include the development compose file as the default
+# Override with -f infrastructure/docker/docker-compose.<env>.yml
+
+# Root-level convenience services for quick local development
+# Full stack is in infrastructure/docker/docker-compose.dev.yml
+
+services:
+  # ── Quick reference: run full dev stack ─────────────────
+  # docker compose -f infrastructure/docker/docker-compose.dev.yml up -d
+
+  # ── Health check proxy ─────────────────────────────────
+  # This service acts as a health check aggregator
+  healthcheck:
+    image: alpine:latest
+    container_name: adbar-healthcheck
+    command: echo "Adbar platform is configured. Use docker compose -f infrastructure/docker/docker-compose.dev.yml up -d to start."
+    networks:
+      - adbar-net
+
+networks:
+  adbar-net:
+    driver: bridge
+    name: adbar-dev-network

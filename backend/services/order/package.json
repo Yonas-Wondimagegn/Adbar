@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/order",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build order",
+    "start": "nest start order",
+    "start:dev": "nest start order --watch",
+    "start:debug": "nest start order --debug --watch",
+    "start:prod": "node dist/services/order/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/order/jest.config.ts"
+  }
+}

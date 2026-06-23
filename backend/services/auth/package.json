@@ -1,0 +1,16 @@
+{
+  "name": "@adbar/auth",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build auth",
+    "start": "nest start auth",
+    "start:dev": "nest start auth --watch",
+    "start:debug": "nest start auth --debug --watch",
+    "start:prod": "node dist/services/auth/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/auth/jest.config.ts",
+    "test:watch": "jest --config ./services/auth/jest.config.ts --watch",
+    "test:cov": "jest --config ./services/auth/jest.config.ts --coverage"
+  }
+}

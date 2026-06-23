@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/escrow",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build escrow",
+    "start": "nest start escrow",
+    "start:dev": "nest start escrow --watch",
+    "start:debug": "nest start escrow --debug --watch",
+    "start:prod": "node dist/services/escrow/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/escrow/jest.config.ts"
+  }
+}

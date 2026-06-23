@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/job",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build job",
+    "start": "nest start job",
+    "start:dev": "nest start job --watch",
+    "start:debug": "nest start job --debug --watch",
+    "start:prod": "node dist/services/job/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/job/jest.config.ts"
+  }
+}

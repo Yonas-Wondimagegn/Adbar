@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/admin",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build admin",
+    "start": "nest start admin",
+    "start:dev": "nest start admin --watch",
+    "start:debug": "nest start admin --debug --watch",
+    "start:prod": "node dist/services/admin/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/admin/jest.config.ts"
+  }
+}

@@ -1,0 +1,9 @@
+
+> adbar@1.0.0 test
+> nx run-many --target=test --all
+
+
+ NX   Failed to process project graph. Run "nx reset" to fix this. Please report the issue if you keep seeing it.
+
+Pass --verbose to see the stacktraces.
+

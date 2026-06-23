@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/search",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build search",
+    "start": "nest start search",
+    "start:dev": "nest start search --watch",
+    "start:debug": "nest start search --debug --watch",
+    "start:prod": "node dist/services/search/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/search/jest.config.ts"
+  }
+}

@@ -1,0 +1,148 @@
+# ============================================================
+# Adbar Platform — Docker Compose (Test)
+# Lightweight test environment for CI pipelines
+# ============================================================
+version: "3.9"
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: adbar-test-postgres
+    tmpfs:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: adbar_test
+      POSTGRES_PASSWORD: adbar_test_password
+      POSTGRES_DB: adbar_test
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adbar_test"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ── Redis ───────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: adbar-test-redis
+    command: redis-server --save "" --appendonly no
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ── Elasticsearch ───────────────────────────────────────
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: adbar-test-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ports:
+      - "9201:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+  # ── Kafka (using Redpanda for faster startup in tests) ──
+  kafka:
+    image: redpandadata/redpanda:v23.3.11
+    container_name: adbar-test-kafka
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 512M
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --node-id 0
+      - --check=false
+      - --kafka-addr PLAINTEXT://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://kafka:9092
+    ports:
+      - "9093:9092"
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "health"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+  # ── API Gateway (test runner) ───────────────────────────
+  api-gateway:
+    build:
+      context: ../services/api-gateway
+      dockerfile: ../../infrastructure/docker/Dockerfile.api-gateway
+      target: builder
+    container_name: adbar-test-api-gateway
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: test
+      PORT: 3000
+      DATABASE_URL: postgresql://adbar_test:***@postgres:5432/adbar_test
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+    command: ["npm", "run", "test:ci"]
+
+  # ── Auth Service (test runner) ──────────────────────────
+  auth-service:
+    build:
+      context: ../services/auth-service
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+      target: builder
+    container_name: adbar-test-auth-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      NODE_ENV: test
+      PORT: 3001
+      DATABASE_URL: postgresql://adbar_test:***@postgres:5432/adbar_test
+      REDIS_URL: redis://redis:6379
+    command: ["npm", "run", "test:ci"]
+
+  # ── Marketplace Service (test runner) ───────────────────
+  marketplace-service:
+    build:
+      context: ../services/marketplace-service
+      dockerfile: ../../infrastructure/docker/Dockerfile.service
+      target: builder
+    container_name: adbar-test-marketplace-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    environment:
+      NODE_ENV: test
+      PORT: 3002
+      DATABASE_URL: postgresql://adbar_test:***@postgres:5432/adbar_test
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      KAFKA_BROKERS: kafka:9092
+    command: ["npm", "run", "test:ci"]
+
+  # ── Web Frontend (test runner) ──────────────────────────
+  web:
+    build:
+      context: ../apps/web
+      dockerfile: ../../infrastructure/docker/Dockerfile.web
+    container_name: adbar-test-web
+    environment:
+      NODE_ENV: test
+    command: ["npm", "run", "test:ci"]

@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "services/api-gateway/src",
+  "monorepo": true,
+  "root": "services/api-gateway",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": false,
+    "tsConfigPath": "services/api-gateway/tsconfig.app.json"
+  },
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "services/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "services/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/api-gateway/tsconfig.app.json"
+      }
+    },
+    "auth": {
+      "type": "application",
+      "root": "services/auth",
+      "entryFile": "main",
+      "sourceRoot": "services/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/auth/tsconfig.app.json"
+      }
+    },
+    "user": {
+      "type": "application",
+      "root": "services/user",
+      "entryFile": "main",
+      "sourceRoot": "services/user/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/user/tsconfig.app.json"
+      }
+    },
+    "product": {
+      "type": "application",
+      "root": "services/product",
+      "entryFile": "main",
+      "sourceRoot": "services/product/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/product/tsconfig.app.json"
+      }
+    },
+    "order": {
+      "type": "application",
+      "root": "services/order",
+      "entryFile": "main",
+      "sourceRoot": "services/order/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/order/tsconfig.app.json"
+      }
+    },
+    "payment": {
+      "type": "application",
+      "root": "services/payment",
+      "entryFile": "main",
+      "sourceRoot": "services/payment/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/payment/tsconfig.app.json"
+      }
+    },
+    "escrow": {
+      "type": "application",
+      "root": "services/escrow",
+      "entryFile": "main",
+      "sourceRoot": "services/escrow/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/escrow/tsconfig.app.json"
+      }
+    },
+    "wallet": {
+      "type": "application",
+      "root": "services/wallet",
+      "entryFile": "main",
+      "sourceRoot": "services/wallet/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/wallet/tsconfig.app.json"
+      }
+    },
+    "freelance": {
+      "type": "application",
+      "root": "services/freelance",
+      "entryFile": "main",
+      "sourceRoot": "services/freelance/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/freelance/tsconfig.app.json"
+      }
+    },
+    "job": {
+      "type": "application",
+      "root": "services/job",
+      "entryFile": "main",
+      "sourceRoot": "services/job/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/job/tsconfig.app.json"
+      }
+    },
+    "contract": {
+      "type": "application",
+      "root": "services/contract",
+      "entryFile": "main",
+      "sourceRoot": "services/contract/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/contract/tsconfig.app.json"
+      }
+    },
+    "messaging": {
+      "type": "application",
+      "root": "services/messaging",
+      "entryFile": "main",
+      "sourceRoot": "services/messaging/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/messaging/tsconfig.app.json"
+      }
+    },
+    "notification": {
+      "type": "application",
+      "root": "services/notification",
+      "entryFile": "main",
+      "sourceRoot": "services/notification/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/notification/tsconfig.app.json"
+      }
+    },
+    "search": {
+      "type": "application",
+      "root": "services/search",
+      "entryFile": "main",
+      "sourceRoot": "services/search/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/search/tsconfig.app.json"
+      }
+    },
+    "review": {
+      "type": "application",
+      "root": "services/review",
+      "entryFile": "main",
+      "sourceRoot": "services/review/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/review/tsconfig.app.json"
+      }
+    },
+    "dispute": {
+      "type": "application",
+      "root": "services/dispute",
+      "entryFile": "main",
+      "sourceRoot": "services/dispute/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/dispute/tsconfig.app.json"
+      }
+    },
+    "kyc": {
+      "type": "application",
+      "root": "services/kyc",
+      "entryFile": "main",
+      "sourceRoot": "services/kyc/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/kyc/tsconfig.app.json"
+      }
+    },
+    "ussd": {
+      "type": "application",
+      "root": "services/ussd",
+      "entryFile": "main",
+      "sourceRoot": "services/ussd/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/ussd/tsconfig.app.json"
+      }
+    },
+    "analytics": {
+      "type": "application",
+      "root": "services/analytics",
+      "entryFile": "main",
+      "sourceRoot": "services/analytics/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/analytics/tsconfig.app.json"
+      }
+    },
+    "ai-matching": {
+      "type": "application",
+      "root": "services/ai-matching",
+      "entryFile": "main",
+      "sourceRoot": "services/ai-matching/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/ai-matching/tsconfig.app.json"
+      }
+    },
+    "admin": {
+      "type": "application",
+      "root": "services/admin",
+      "entryFile": "main",
+      "sourceRoot": "services/admin/src",
+      "compilerOptions": {
+        "tsConfigPath": "services/admin/tsconfig.app.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "shared/common",
+      "entryFile": "index",
+      "sourceRoot": "shared/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "shared/common/tsconfig.lib.json"
+      }
+    },
+    "middleware": {
+      "type": "library",
+      "root": "shared/middleware",
+      "entryFile": "index",
+      "sourceRoot": "shared/middleware/src",
+      "compilerOptions": {
+        "tsConfigPath": "shared/middleware/tsconfig.lib.json"
+      }
+    },
+    "events": {
+      "type": "library",
+      "root": "shared/events",
+      "entryFile": "index",
+      "sourceRoot": "shared/events/src",
+      "compilerOptions": {
+        "tsConfigPath": "shared/events/tsconfig.lib.json"
+      }
+    }
+  }
+}

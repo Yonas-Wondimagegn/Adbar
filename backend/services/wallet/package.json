@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/wallet",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build wallet",
+    "start": "nest start wallet",
+    "start:dev": "nest start wallet --watch",
+    "start:debug": "nest start wallet --debug --watch",
+    "start:prod": "node dist/services/wallet/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/wallet/jest.config.ts"
+  }
+}

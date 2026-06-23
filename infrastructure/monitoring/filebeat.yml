@@ -1,0 +1,94 @@
+# ============================================================
+# Filebeat Configuration — Adbar Platform
+# ============================================================
+filebeat.inputs:
+  - type: container
+    paths:
+      - /var/log/containers/*.log
+    processors:
+      - add_kubernetes_metadata:
+          host: "node.name"
+          matchers:
+            - logs_path:
+                logs_path: "/var/log/containers/"
+
+  # ── Application logs ─────────────────────────────────────
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/adbar/**/*.log
+    fields:
+      log_source: adbar-app
+    fields_under_root: true
+    multiline:
+      pattern: '^\d{4}-\d{2}-\d{2}'
+      negate: true
+      match: after
+
+  # ── Docker daemon logs ───────────────────────────────────
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/docker/*.log
+    fields:
+      log_source: docker-daemon
+    fields_under_root: true
+
+# ── Modules ───────────────────────────────────────────────
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+# ── Elasticsearch Output ──────────────────────────────────
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "adbar-logs-%{[agent.version]}-%{+yyyy.MM.dd}"
+  # For authenticated ES:
+  # username: "filebeat_writer"
+  # password: "${FILEBEAT_ES_PASSWORD}"
+
+# ── ILM ───────────────────────────────────────────────────
+setup:
+  ilm:
+    enabled: true
+    rollover_alias: "adbar-logs"
+    pattern: "{now/d}-000001"
+    policy_name: "adbar-logs-policy"
+    policy_file: /etc/filebeat/ilm-policy.json
+  template:
+    name: "adbar-logs"
+    pattern: "adbar-logs-*"
+    enabled: true
+    settings:
+      index.number_of_shards: 2
+      index.number_of_replicas: 1
+
+# ── Logging ───────────────────────────────────────────────
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+# ── Monitoring ────────────────────────────────────────────
+monitoring:
+  enabled: true
+  elasticsearch:
+    hosts: ["elasticsearch:9200"]
+
+# ── Processors ────────────────────────────────────────────
+processors:
+  - add_host_metadata:
+      when.not.contains.tags: forwarded
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+  - add_kubernetes_metadata: ~
+  - decode_json_fields:
+      fields: ["message"]
+      target: "json"
+      overwrite_keys: true
+      when:
+        contains:
+          message: '{'

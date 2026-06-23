@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/payment",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build payment",
+    "start": "nest start payment",
+    "start:dev": "nest start payment --watch",
+    "start:debug": "nest start payment --debug --watch",
+    "start:prod": "node dist/services/payment/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/payment/jest.config.ts"
+  }
+}

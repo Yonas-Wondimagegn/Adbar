@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/kyc",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build kyc",
+    "start": "nest start kyc",
+    "start:dev": "nest start kyc --watch",
+    "start:debug": "nest start kyc --debug --watch",
+    "start:prod": "node dist/services/kyc/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/kyc/jest.config.ts"
+  }
+}

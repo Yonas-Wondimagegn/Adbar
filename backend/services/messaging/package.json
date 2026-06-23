@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/messaging",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build messaging",
+    "start": "nest start messaging",
+    "start:dev": "nest start messaging --watch",
+    "start:debug": "nest start messaging --debug --watch",
+    "start:prod": "node dist/services/messaging/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/messaging/jest.config.ts"
+  }
+}

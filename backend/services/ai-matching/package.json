@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/ai-matching",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build ai-matching",
+    "start": "nest start ai-matching",
+    "start:dev": "nest start ai-matching --watch",
+    "start:debug": "nest start ai-matching --debug --watch",
+    "start:prod": "node dist/services/ai-matching/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/ai-matching/jest.config.ts"
+  }
+}

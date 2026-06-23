@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/dispute",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build dispute",
+    "start": "nest start dispute",
+    "start:dev": "nest start dispute --watch",
+    "start:debug": "nest start dispute --debug --watch",
+    "start:prod": "node dist/services/dispute/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/dispute/jest.config.ts"
+  }
+}

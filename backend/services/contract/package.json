@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/contract",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build contract",
+    "start": "nest start contract",
+    "start:dev": "nest start contract --watch",
+    "start:debug": "nest start contract --debug --watch",
+    "start:prod": "node dist/services/contract/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/contract/jest.config.ts"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/product",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build product",
+    "start": "nest start product",
+    "start:dev": "nest start product --watch",
+    "start:debug": "nest start product --debug --watch",
+    "start:prod": "node dist/services/product/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/product/jest.config.ts"
+  }
+}

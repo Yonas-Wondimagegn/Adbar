@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/analytics",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build analytics",
+    "start": "nest start analytics",
+    "start:dev": "nest start analytics --watch",
+    "start:debug": "nest start analytics --debug --watch",
+    "start:prod": "node dist/services/analytics/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/analytics/jest.config.ts"
+  }
+}

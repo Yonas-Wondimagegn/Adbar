@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/ussd",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build ussd",
+    "start": "nest start ussd",
+    "start:dev": "nest start ussd --watch",
+    "start:debug": "nest start ussd --debug --watch",
+    "start:prod": "node dist/services/ussd/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/ussd/jest.config.ts"
+  }
+}

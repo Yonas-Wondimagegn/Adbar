@@ -1,0 +1,14 @@
+{
+  "name": "@adbar/freelance",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build freelance",
+    "start": "nest start freelance",
+    "start:dev": "nest start freelance --watch",
+    "start:debug": "nest start freelance --debug --watch",
+    "start:prod": "node dist/services/freelance/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\"",
+    "test": "jest --config ./services/freelance/jest.config.ts"
+  }
+}

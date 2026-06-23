@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: adbar
+  labels:
+    app.kubernetes.io/part-of: adbar
+    app.kubernetes.io/managed-by: kustomize

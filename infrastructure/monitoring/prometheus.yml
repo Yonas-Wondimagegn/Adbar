@@ -1,0 +1,141 @@
+# ============================================================
+# Prometheus Configuration — Adbar Platform
+# ============================================================
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  scrape_timeout: 10s
+
+# ── Alertmanager ──────────────────────────────────────────
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# ── Alert Rules ───────────────────────────────────────────
+rule_files:
+  - "alerts.yml"
+
+# ── Scrape Configs ───────────────────────────────────────
+scrape_configs:
+  # ── Prometheus self-monitoring ──────────────────────────
+  - job_name: "prometheus"
+    static_configs:
+      - targets:
+          - "localhost:9090"
+
+  # ── API Gateway ─────────────────────────────────────────
+  - job_name: "adbar-api-gateway"
+    metrics_path: /metrics
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - adbar
+            - adbar-staging
+            - adbar-prod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        regex: api-gateway
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        regex: "true"
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        regex: (.+)
+        target_label: __metrics_path__
+        action: replace
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
+        regex: (.+)
+        target_label: __address__
+        action: replace
+        replacement: $1
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+
+  # ── Web Frontend ────────────────────────────────────────
+  - job_name: "adbar-web"
+    metrics_path: /metrics
+    kubernetes_sd_configs:
+      - role: pod
+        namespaces:
+          names:
+            - adbar
+            - adbar-staging
+            - adbar-prod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        regex: web
+        action: keep
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+
+  # ── Node Exporter ───────────────────────────────────────
+  - job_name: "node-exporter"
+    kubernetes_sd_configs:
+      - role: node
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: (.+):10250
+        target_label: __address__
+        replacement: $1:9100
+
+  # ── kube-state-metrics ──────────────────────────────────
+  - job_name: "kube-state-metrics"
+    static_configs:
+      - targets:
+          - "kube-state-metrics.kube-system.svc.cluster.local:8080"
+
+  # ── PostgreSQL (via postgres_exporter) ─────────────────
+  - job_name: "postgres"
+    static_configs:
+      - targets:
+          - "postgres-exporter:9187"
+        labels:
+          service: postgres
+
+  # ── Redis (via redis_exporter) ──────────────────────────
+  - job_name: "redis"
+    static_configs:
+      - targets:
+          - "redis-exporter:9121"
+        labels:
+          service: redis
+
+  # ── Elasticsearch ───────────────────────────────────────
+  - job_name: "elasticsearch"
+    static_configs:
+      - targets:
+          - "elasticsearch-exporter:9114"
+        labels:
+          service: elasticsearch
+
+  # ── Kafka (via kafka_exporter) ──────────────────────────
+  - job_name: "kafka"
+    static_configs:
+      - targets:
+          - "kafka-exporter:9308"
+        labels:
+          service: kafka
+
+  # ── Blackbox Exporter (endpoint monitoring) ─────────────
+  - job_name: "blackbox-http"
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://api.adbar.io/health
+          - https://adbar.io/api/health
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115
