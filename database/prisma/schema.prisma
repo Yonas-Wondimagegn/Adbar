@@ -5,6 +5,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../backend/node_modules/.prisma/client"
 }
 
 datasource db {
@@ -1530,3 +1531,4 @@ model UssdSession {
   @@index([sessionId])
   @@map("ussd_sessions")
 }
+
