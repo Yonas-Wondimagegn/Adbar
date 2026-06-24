@@ -1,4 +1,5 @@
-enum OrderStatus { PENDING='PENDING', PAID='PAID', PROCESSING='PROCESSING', PACKED='PACKED', SHIPPED='SHIPPED', DELIVERED='DELIVERED', RETURNED='RETURNED', REFUNDED='REFUNDED', CANCELLED='CANCELLED' }
+import { $Enums } from '@prisma/client';
+type OrderStatus = $Enums.OrderStatus;
 
 /**
  * Order State Machine
