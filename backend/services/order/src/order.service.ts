@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
-import { OrderStatus, ProductStatus } from '@prisma/client';
+type OrderStatus = string; type ProductStatus = string;
 import { PrismaService } from '@adbar/common';
 import { PaginationDto } from '@adbar/common';
 import { canTransition, getAllowedTransitions } from './order-state-machine';

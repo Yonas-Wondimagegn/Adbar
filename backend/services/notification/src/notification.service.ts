@@ -6,7 +6,8 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@adbar/common';
 import { PaginationDto, PaginatedResult } from '@adbar/common';
-import { NotificationType } from '@prisma/client';
+// NotificationType imported from schema enums
+type NotificationType = string;
 
 export interface NotificationSettings {
   emailEnabled: boolean;

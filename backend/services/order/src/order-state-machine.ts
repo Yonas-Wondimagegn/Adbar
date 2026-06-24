@@ -1,4 +1,4 @@
-import { OrderStatus } from '@prisma/client';
+type OrderStatus = string;
 
 /**
  * Order State Machine
