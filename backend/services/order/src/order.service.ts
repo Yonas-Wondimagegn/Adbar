@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
-type OrderStatus = string; type ProductStatus = string;
+enum OrderStatus { PENDING='PENDING', PAID='PAID', PROCESSING='PROCESSING', PACKED='PACKED', SHIPPED='SHIPPED', DELIVERED='DELIVERED', RETURNED='RETURNED', REFUNDED='REFUNDED', CANCELLED='CANCELLED' }
+enum ProductStatus { ACTIVE='ACTIVE', INACTIVE='INACTIVE', DRAFT='DRAFT' }
 import { PrismaService } from '@adbar/common';
 import { PaginationDto } from '@adbar/common';
 import { canTransition, getAllowedTransitions } from './order-state-machine';
@@ -446,3 +447,4 @@ export class OrderService {
     }];
   }
 }
+

@@ -1,4 +1,4 @@
-type OrderStatus = string;
+enum OrderStatus { PENDING='PENDING', PAID='PAID', PROCESSING='PROCESSING', PACKED='PACKED', SHIPPED='SHIPPED', DELIVERED='DELIVERED', RETURNED='RETURNED', REFUNDED='REFUNDED', CANCELLED='CANCELLED' }
 
 /**
  * Order State Machine
@@ -43,3 +43,4 @@ export function getAllowedTransitions(from: OrderState): OrderState[] {
 export function isTerminalState(state: OrderState): boolean {
   return ORDER_TRANSITIONS[state]?.length === 0;
 }
+
