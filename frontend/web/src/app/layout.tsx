@@ -1,6 +1,6 @@
 import React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Providers } from '@/components/Providers';
+import './globals.css';
 
 export const metadata = {
   title: 'Adbar - Digital Marketplace',
