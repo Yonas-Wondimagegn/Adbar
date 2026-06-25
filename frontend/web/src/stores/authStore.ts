@@ -33,7 +33,7 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         try {
           const response = await api.post('/auth/login', { email, password });
-          const { user, accessToken, token: rawToken } = response.data; const token = accessToken || rawToken;
+          const { user: rawUser, accessToken, token: rawToken } = response.data; const token = accessToken || rawToken; const user = { ...rawUser, name: rawUser.firstName ? \\ \\`.trim() : (rawUser.name || rawUser.email), roles: (rawUser.roles || []).map((r: any) => typeof r === 'string' ? r : r.role), };
           if (!user.roles || user.roles.length === 0) {
             user.roles = ['BUYER'];
           }
@@ -49,7 +49,7 @@ export const useAuthStore = create<AuthState>()(
       register: async (name: string, email: string, password: string) => {
         try {
           const response = await api.post('/auth/register', { name, email, password });
-          const { user, accessToken, token: rawToken } = response.data; const token = accessToken || rawToken;
+          const { user: rawUser, accessToken, token: rawToken } = response.data; const token = accessToken || rawToken; const user = { ...rawUser, name: rawUser.firstName ? \\ \\`.trim() : (rawUser.name || rawUser.email), roles: (rawUser.roles || []).map((r: any) => typeof r === 'string' ? r : r.role), };
           if (!user.roles || user.roles.length === 0) {
             user.roles = ['BUYER'];
           }
@@ -95,4 +95,5 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
 
