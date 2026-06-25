@@ -23,6 +23,26 @@ interface AuthState {
   setActiveRole: (role: UserRole) => void;
 }
 
+function normalizeUser(rawUser: any, token?: string): { user: User; token: string } {
+  const roles: UserRole[] = (rawUser.roles || []).map((r: any) =>
+    typeof r === 'string' ? r : r.role
+  ) as UserRole[];
+  if (roles.length === 0) roles.push('BUYER');
+  const name = rawUser.firstName
+    ? `${rawUser.firstName} ${rawUser.lastName || ''}`.trim()
+    : rawUser.name || rawUser.email || 'User';
+  return {
+    user: {
+      id: rawUser.id || rawUser.sub,
+      name,
+      email: rawUser.email,
+      roles,
+      activeRole: roles[0],
+    },
+    token: token || '',
+  };
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
@@ -33,13 +53,11 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         try {
           const response = await api.post('/auth/login', { email, password });
-          const { user: rawUser, accessToken, token: rawToken } = response.data; const token = accessToken || rawToken; const user = { ...rawUser, name: rawUser.firstName ? \\ \\`.trim() : (rawUser.name || rawUser.email), roles: (rawUser.roles || []).map((r: any) => typeof r === 'string' ? r : r.role), };
-          if (!user.roles || user.roles.length === 0) {
-            user.roles = ['BUYER'];
-          }
-          if (!user.activeRole) {
-            user.activeRole = user.roles[0];
-          }
+          const raw = response.data;
+          const accessToken = raw.accessToken || raw.token || raw.data?.accessToken;
+          const rawUser = raw.user || raw.data?.user;
+          const { user, token } = normalizeUser(rawUser, accessToken);
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           set({ user, token, isAuthenticated: true });
         } catch (error: any) {
           throw new Error(error.response?.data?.message || 'Login failed');
@@ -48,14 +66,20 @@ export const useAuthStore = create<AuthState>()(
 
       register: async (name: string, email: string, password: string) => {
         try {
-          const response = await api.post('/auth/register', { name, email, password });
-          const { user: rawUser, accessToken, token: rawToken } = response.data; const token = accessToken || rawToken; const user = { ...rawUser, name: rawUser.firstName ? \\ \\`.trim() : (rawUser.name || rawUser.email), roles: (rawUser.roles || []).map((r: any) => typeof r === 'string' ? r : r.role), };
-          if (!user.roles || user.roles.length === 0) {
-            user.roles = ['BUYER'];
-          }
-          if (!user.activeRole) {
-            user.activeRole = user.roles[0];
-          }
+          const [firstName, ...rest] = name.split(' ');
+          const lastName = rest.join(' ');
+          const response = await api.post('/auth/register', {
+            firstName,
+            lastName,
+            email,
+            password,
+            roles: ['BUYER'],
+          });
+          const raw = response.data;
+          const accessToken = raw.accessToken || raw.token || raw.data?.accessToken;
+          const rawUser = raw.user || raw.data?.user;
+          const { user, token } = normalizeUser(rawUser, accessToken);
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           set({ user, token, isAuthenticated: true });
         } catch (error: any) {
           throw new Error(error.response?.data?.message || 'Registration failed');
@@ -63,19 +87,15 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        delete api.defaults.headers.common['Authorization'];
         set({ user: null, token: null, isAuthenticated: false });
       },
 
       loadUser: async () => {
         try {
           const response = await api.get('/auth/me');
-          const user = response.data.user;
-          if (!user.roles || user.roles.length === 0) {
-            user.roles = ['BUYER'];
-          }
-          if (!user.activeRole) {
-            user.activeRole = user.roles[0];
-          }
+          const rawUser = response.data.user || response.data.data?.user || response.data;
+          const { user } = normalizeUser(rawUser);
           set({ user, isAuthenticated: true });
         } catch {
           set({ user: null, token: null, isAuthenticated: false });
@@ -95,5 +115,3 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
-
-
