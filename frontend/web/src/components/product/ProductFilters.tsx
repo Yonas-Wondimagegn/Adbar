@@ -32,7 +32,7 @@ export function ProductFilters({ filters, onChange }: ProductFiltersProps) {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    api.get('/products/categories').then(res => {
+    api.get('/categories').then(res => {
       const data = res.data?.data || res.data || [];
       setCategories(Array.isArray(data) ? data : []);
     }).catch(() => {
@@ -109,3 +109,4 @@ export function ProductFilters({ filters, onChange }: ProductFiltersProps) {
     </div>
   );
 }
+
