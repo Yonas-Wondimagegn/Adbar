@@ -33,7 +33,7 @@ export const useAuthStore = create<AuthState>()(
       login: async (email: string, password: string) => {
         try {
           const response = await api.post('/auth/login', { email, password });
-          const { user, token } = response.data;
+          const { user, accessToken, token: rawToken } = response.data; const token = accessToken || rawToken;
           if (!user.roles || user.roles.length === 0) {
             user.roles = ['BUYER'];
           }
@@ -49,7 +49,7 @@ export const useAuthStore = create<AuthState>()(
       register: async (name: string, email: string, password: string) => {
         try {
           const response = await api.post('/auth/register', { name, email, password });
-          const { user, token } = response.data;
+          const { user, accessToken, token: rawToken } = response.data; const token = accessToken || rawToken;
           if (!user.roles || user.roles.length === 0) {
             user.roles = ['BUYER'];
           }
@@ -95,3 +95,4 @@ export const useAuthStore = create<AuthState>()(
     }
   )
 );
+
