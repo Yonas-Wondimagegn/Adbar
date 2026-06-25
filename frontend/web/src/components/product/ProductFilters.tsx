@@ -32,14 +32,18 @@ export function ProductFilters({ filters, onChange }: ProductFiltersProps) {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    api.get('/categories').then(res => {
-      const data = res.data?.data || res.data || [];
-      setCategories(Array.isArray(data) ? data : []);
-    }).catch(() => {
-      setCategories([
-        { id: '', name: 'All' },
-      ]);
-    });
+    api.get('/products').then(res => {
+      const products = res.data?.data || [];
+      const seen = new Set<string>();
+      const cats: Category[] = [];
+      products.forEach((p: any) => {
+        if (p.category?.id && !seen.has(p.category.id)) {
+          seen.add(p.category.id);
+          cats.push({ id: p.category.id, name: p.category.name });
+        }
+      });
+      setCategories(cats);
+    }).catch(() => setCategories([]));
   }, []);
 
   return (
@@ -109,4 +113,5 @@ export function ProductFilters({ filters, onChange }: ProductFiltersProps) {
     </div>
   );
 }
+
 
