@@ -58,7 +58,7 @@ export default function ProductsPage() {
                 Failed to load products. Please try again.
               </div>
             ) : (
-              <ProductGrid products={data?.products || []} />
+              <ProductGrid products={Array.isArray(data) ? data : (data?.data || [])} />
             )}
           </main>
         </div>
@@ -66,3 +66,4 @@ export default function ProductsPage() {
     </div>
   );
 }
+

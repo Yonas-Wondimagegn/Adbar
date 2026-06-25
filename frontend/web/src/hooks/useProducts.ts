@@ -22,7 +22,7 @@ export function useProducts(params: ProductQueryParams = {}) {
       if (params.maxPrice) cleanParams.maxPrice = params.maxPrice;
       if (params.page) cleanParams.page = params.page;
       const response = await api.get('/products', { params: cleanParams });
-      return response.data;
+      return response.data.data || response.data;
     },
   });
 }
@@ -32,8 +32,9 @@ export function useProduct(slug: string) {
     queryKey: ['product', slug],
     queryFn: async () => {
       const response = await api.get(`/products/${slug}`);
-      return response.data;
+      return response.data.data || response.data;
     },
     enabled: !!slug,
   });
 }
+
