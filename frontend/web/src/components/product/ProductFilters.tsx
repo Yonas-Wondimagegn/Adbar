@@ -16,7 +16,7 @@ interface ProductFiltersProps {
   onChange: (filters: Filters) => void;
 }
 
-const categories = ['All', 'UI Kits', 'Templates', 'Icons', 'Plugins', 'Themes'];
+const categories = ['All', 'Food & Beverages', 'Phones & Tablets', "Men's Wear", 'Electronics', 'Fashion'];
 const sortOptions = [
   { value: 'newest', label: 'Newest' },
   { value: 'price_low', label: 'Price: Low to High' },
@@ -92,3 +92,4 @@ export function ProductFilters({ filters, onChange }: ProductFiltersProps) {
     </div>
   );
 }
+
