@@ -58,7 +58,7 @@ export default function ProductsPage() {
                 Failed to load products. Please try again.
               </div>
             ) : (
-              <ProductGrid products={Array.isArray(data) ? data : (data?.data || [])} />
+              <ProductGrid products={( Array.isArray(data) ? data : (data?.data || []) ).map((p: any) => ({ ...p, category: p.category?.name || p.category || '', seller: p.store || { name: 'Unknown' }, rating: parseFloat(p.averageRating) || 0, reviews: p.reviewCount || 0, price: parseFloat(p.price) || 0 }))} />
             )}
           </main>
         </div>
@@ -66,4 +66,5 @@ export default function ProductsPage() {
     </div>
   );
 }
+
 
