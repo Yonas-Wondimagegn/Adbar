@@ -27,18 +27,18 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard', roles: ['BUYER', 'SELLER', 'CLIENT', 'FREELANCER', 'MODERATOR', 'COMPLIANCE_OFFICER', 'ADMIN'] },
-  { href: '/dashboard/orders', icon: ShoppingBag, label: 'Orders', roles: ['BUYER', 'SELLER', 'CLIENT', 'FREELANCER', 'MODERATOR', 'COMPLIANCE_OFFICER', 'ADMIN'] },
-  { href: '/dashboard/wallet', icon: Wallet, label: 'Wallet', roles: ['BUYER', 'SELLER', 'CLIENT', 'FREELANCER', 'MODERATOR', 'COMPLIANCE_OFFICER', 'ADMIN'] },
-  { href: '/dashboard/store', icon: Store, label: 'Store', roles: ['SELLER', 'ADMIN'] },
-  { href: '/dashboard/products', icon: ClipboardList, label: 'Products', roles: ['SELLER', 'BUYER', 'MODERATOR', 'ADMIN'] },
-  { href: '/dashboard/jobs', icon: Briefcase, label: 'Jobs', roles: ['FREELANCER', 'CLIENT', 'ADMIN'] },
-  { href: '/dashboard/proposals', icon: FileText, label: 'Proposals', roles: ['FREELANCER', 'CLIENT', 'ADMIN'] },
-  { href: '/dashboard/contracts', icon: FileText, label: 'Contracts', roles: ['FREELANCER', 'CLIENT', 'ADMIN'] },
-  { href: '/dashboard/profile', icon: User, label: 'Profile', roles: ['BUYER', 'SELLER', 'CLIENT', 'FREELANCER', 'MODERATOR', 'COMPLIANCE_OFFICER', 'ADMIN'] },
-  { href: '/admin', icon: Shield, label: 'Admin', roles: ['ADMIN'] },
-  { href: '/admin/kyc', icon: Shield, label: 'KYC Review', roles: ['COMPLIANCE_OFFICER', 'ADMIN'] },
-  { href: '/admin/reports', icon: ClipboardList, label: 'Reports', roles: ['MODERATOR', 'ADMIN'] },
+  { href: '/dashboard-group', icon: LayoutDashboard, label: 'Dashboard', roles: ['BUYER', 'SELLER', 'CLIENT', 'FREELANCER', 'MODERATOR', 'COMPLIANCE_OFFICER', 'ADMIN'] },
+  { href: '/dashboard-group/my-orders', icon: ShoppingBag, label: 'Orders', roles: ['BUYER', 'SELLER', 'CLIENT', 'FREELANCER', 'MODERATOR', 'COMPLIANCE_OFFICER', 'ADMIN'] },
+  { href: '/dashboard-group/wallet', icon: Wallet, label: 'Wallet', roles: ['BUYER', 'SELLER', 'CLIENT', 'FREELANCER', 'MODERATOR', 'COMPLIANCE_OFFICER', 'ADMIN'] },
+  { href: '/dashboard-group/store', icon: Store, label: 'Store', roles: ['SELLER', 'ADMIN'] },
+  { href: '/shop-group/products', icon: ClipboardList, label: 'Products', roles: ['SELLER', 'BUYER', 'MODERATOR', 'ADMIN'] },
+  { href: '/freelance-group/jobs', icon: Briefcase, label: 'Jobs', roles: ['FREELANCER', 'CLIENT', 'ADMIN'] },
+  { href: '/freelance-group/proposals', icon: FileText, label: 'Proposals', roles: ['FREELANCER', 'CLIENT', 'ADMIN'] },
+  { href: '/dashboard-group/contracts', icon: FileText, label: 'Contracts', roles: ['FREELANCER', 'CLIENT', 'ADMIN'] },
+  { href: '/freelance-group/profile', icon: User, label: 'Profile', roles: ['BUYER', 'SELLER', 'CLIENT', 'FREELANCER', 'MODERATOR', 'COMPLIANCE_OFFICER', 'ADMIN'] },
+  { href: '/admin-group', icon: Shield, label: 'Admin', roles: ['ADMIN'] },
+  { href: '/admin-group/kyc', icon: Shield, label: 'KYC Review', roles: ['COMPLIANCE_OFFICER', 'ADMIN'] },
+  { href: '/admin-group/reports', icon: ClipboardList, label: 'Reports', roles: ['MODERATOR', 'ADMIN'] },
 ];
 
 export function Sidebar() {

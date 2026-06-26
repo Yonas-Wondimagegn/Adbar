@@ -50,10 +50,10 @@ export default function DashboardPage() {
         <Card className="p-6">
           <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
-            <a href="/dashboard/wallet" className="rounded-lg border p-4 hover:bg-accent text-sm font-medium">
+            <a href="/dashboard-group/wallet" className="rounded-lg border p-4 hover:bg-accent text-sm font-medium">
               View Wallet
             </a>
-            <a href="/dashboard/orders" className="rounded-lg border p-4 hover:bg-accent text-sm font-medium">
+            <a href="/dashboard-group/my-orders" className="rounded-lg border p-4 hover:bg-accent text-sm font-medium">
               Track Orders
             </a>
             <a href="/products" className="rounded-lg border p-4 hover:bg-accent text-sm font-medium">

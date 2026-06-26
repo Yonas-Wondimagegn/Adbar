@@ -38,7 +38,7 @@ export default function CheckoutPage() {
     // Simulate payment processing
     await new Promise((resolve) => setTimeout(resolve, 2000));
     clearCart();
-    router.push('/dashboard/orders');
+    router.push('/dashboard-group/my-orders');
   };
 
   if (!mounted) {

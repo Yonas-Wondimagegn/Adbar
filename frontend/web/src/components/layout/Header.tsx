@@ -47,7 +47,7 @@ export function Header() {
             </Button>
           </Link>
           {user ? (
-            <Link href="/dashboard">
+            <Link href="/dashboard-group">
               <Button variant="ghost" size="icon">
                 <User className="h-5 w-5" />
               </Button>
@@ -82,7 +82,7 @@ export function Header() {
             <Link href="/jobs" className="px-3 py-2 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>
               Freelance
             </Link>
-            <Link href="/dashboard" className="px-3 py-2 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>
+            <Link href="/dashboard-group" className="px-3 py-2 rounded-md hover:bg-accent" onClick={() => setMobileOpen(false)}>
               Dashboard
             </Link>
           </nav>

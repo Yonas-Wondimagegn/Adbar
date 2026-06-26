@@ -34,7 +34,7 @@ export default function RegisterPage() {
     try {
       setError('');
       await registerUser(data.name, data.email, data.password);
-      router.push('/dashboard');
+      router.push('/dashboard-group');
     } catch (err: any) {
       setError(err.message || 'Registration failed');
     }

@@ -22,9 +22,9 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-3">Account</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/dashboard" className="hover:text-primary">Dashboard</Link></li>
-              <li><Link href="/dashboard/wallet" className="hover:text-primary">Wallet</Link></li>
-              <li><Link href="/dashboard/orders" className="hover:text-primary">Orders</Link></li>
+              <li><Link href="/dashboard-group" className="hover:text-primary">Dashboard</Link></li>
+              <li><Link href="/dashboard-group/wallet" className="hover:text-primary">Wallet</Link></li>
+              <li><Link href="/dashboard-group/my-orders" className="hover:text-primary">Orders</Link></li>
             </ul>
           </div>
           <div>

@@ -29,7 +29,7 @@ export default function LoginPage() {
     try {
       setError('');
       await login(data.email, data.password);
-      router.push('/dashboard');
+      router.push('/dashboard-group');
     } catch (err: any) {
       setError(err.message || 'Login failed');
     }
