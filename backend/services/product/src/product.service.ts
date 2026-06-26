@@ -140,6 +140,7 @@ export class ProductService {
           category: { select: { id: true, name: true } },
           variants: { select: { id: true, name: true, price: true } },
           store: { select: { id: true, name: true } },
+          images: { where: { isPrimary: true }, take: 1, select: { id: true, url: true } },
         },
       }),
       this.prisma.product.count({ where }),

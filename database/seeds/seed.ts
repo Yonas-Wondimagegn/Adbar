@@ -534,6 +534,28 @@ async function main() {
   }
 
   // ============================================================
+  // 5b. PRODUCT IMAGES
+  // ============================================================
+  console.log('Creating product images...');
+
+  const productImages = [
+    { id: 'img0000001-0000-4000-8000-000000000001', productId: IDS.product1, url: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400', altText: 'Samsung Galaxy A54', isPrimary: true, sortOrder: 1 },
+    { id: 'img0000002-0000-4000-8000-000000000002', productId: IDS.product2, url: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400', altText: 'iPhone 15 Pro', isPrimary: true, sortOrder: 1 },
+    { id: 'img0000003-0000-4000-8000-000000000003', productId: IDS.product3, url: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400', altText: 'Ethiopian Netela', isPrimary: true, sortOrder: 1 },
+    { id: 'img0000004-0000-4000-8000-000000000004', productId: IDS.product4, url: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=400', altText: 'Ethiopian Gabi', isPrimary: true, sortOrder: 1 },
+    { id: 'img0000005-0000-4000-8000-000000000005', productId: IDS.product5, url: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=400', altText: 'Yirgacheffe Coffee Beans', isPrimary: true, sortOrder: 1 },
+    { id: 'img0000006-0000-4000-8000-000000000006', productId: IDS.product6, url: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=400', altText: 'Ethiopian Wild Honey', isPrimary: true, sortOrder: 1 },
+  ];
+
+  for (const img of productImages) {
+    await prisma.productImage.upsert({
+      where: { id: img.id },
+      update: {},
+      create: img,
+    });
+  }
+
+  // ============================================================
   // 6. ORDERS (one delivered, one shipped)
   // ============================================================
   console.log('Creating orders...');

@@ -29,8 +29,12 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <Link href={`/products/${product.slug}`}>
-        <div className="aspect-video bg-muted flex items-center justify-center">
-          <span className="text-muted-foreground text-sm">Image</span>
+        <div className="aspect-video bg-muted flex items-center justify-center overflow-hidden">
+          {product.image ? (
+            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-muted-foreground text-sm">Image</span>
+          )}
         </div>
       </Link>
       <div className="p-4">
