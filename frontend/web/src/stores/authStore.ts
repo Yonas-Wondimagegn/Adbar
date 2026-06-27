@@ -32,13 +32,7 @@ function normalizeUser(rawUser: any, token?: string): { user: User; token: strin
     ? `${rawUser.firstName} ${rawUser.lastName || ''}`.trim()
     : rawUser.name || rawUser.email || 'User';
   return {
-    user: {
-      id: rawUser.id || rawUser.sub,
-      name,
-      email: rawUser.email,
-      roles,
-      activeRole: roles[0],
-    },
+    user: { id: rawUser.id || rawUser.sub, name, email: rawUser.email, roles, activeRole: roles[0] },
     token: token || '',
   };
 }
@@ -49,13 +43,11 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
-
-      login: async (email: string, password: string) => {
+      login: async (email, password) => {
         try {
-          const response = await api.post('/auth/login', { email, password });
-          const raw = response.data;
-          const accessToken = raw.accessToken || raw.token || raw.data?.accessToken;
-          const rawUser = raw.user || raw.data?.user;
+          const { data } = await api.post('/auth/login', { email, password });
+          const accessToken = data.accessToken || data.token || data.data?.accessToken;
+          const rawUser = data.user || data.data?.user;
           const { user, token } = normalizeUser(rawUser, accessToken);
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           set({ user, token, isAuthenticated: true });
@@ -63,21 +55,14 @@ export const useAuthStore = create<AuthState>()(
           throw new Error(error.response?.data?.message || 'Login failed');
         }
       },
-
-      register: async (name: string, email: string, password: string) => {
+      register: async (name, email, password) => {
         try {
           const [firstName, ...rest] = name.split(' ');
-          const lastName = rest.join(' ');
-          const response = await api.post('/auth/register', {
-            firstName,
-            lastName,
-            email,
-            password,
-            roles: ['BUYER'],
+          const { data } = await api.post('/auth/register', {
+            firstName, lastName: rest.join(' '), email, password, roles: ['BUYER'],
           });
-          const raw = response.data;
-          const accessToken = raw.accessToken || raw.token || raw.data?.accessToken;
-          const rawUser = raw.user || raw.data?.user;
+          const accessToken = data.accessToken || data.token || data.data?.accessToken;
+          const rawUser = data.user || data.data?.user;
           const { user, token } = normalizeUser(rawUser, accessToken);
           api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           set({ user, token, isAuthenticated: true });
@@ -85,33 +70,25 @@ export const useAuthStore = create<AuthState>()(
           throw new Error(error.response?.data?.message || 'Registration failed');
         }
       },
-
       logout: () => {
         delete api.defaults.headers.common['Authorization'];
         set({ user: null, token: null, isAuthenticated: false });
       },
-
       loadUser: async () => {
         try {
-          const response = await api.get('/auth/me');
-          const rawUser = response.data.user || response.data.data?.user || response.data;
+          const { data } = await api.get('/auth/me');
+          const rawUser = data.user || data.data?.user || data;
           const { user } = normalizeUser(rawUser);
           set({ user, isAuthenticated: true });
         } catch {
           set({ user: null, token: null, isAuthenticated: false });
         }
       },
-
-      setActiveRole: (role: UserRole) => {
+      setActiveRole: (role) => {
         const { user } = get();
-        if (user && user.roles.includes(role)) {
-          set({ user: { ...user, activeRole: role } });
-        }
+        if (user?.roles.includes(role)) set({ user: { ...user, activeRole: role } });
       },
     }),
-    {
-      name: 'auth-storage',
-      partialize: (state) => ({ token: state.token, user: state.user }),
-    }
+    { name: 'auth-storage', partialize: (s) => ({ token: s.token, user: s.user }) }
   )
 );
